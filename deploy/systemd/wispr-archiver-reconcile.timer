@@ -1,0 +1,10 @@
+[Unit]
+Description=Schedule Wispr archive reconcile
+
+[Timer]
+OnCalendar=Sun *-*-* 03:15:00 UTC
+Persistent=true
+Unit=wispr-archiver@reconcile.service
+
+[Install]
+WantedBy=timers.target

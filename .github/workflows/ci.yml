@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Install
+        run: uv sync --locked
+      - name: rclone (publish tests run it between local folders, no network)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq rclone shellcheck
+          rclone version | head -1
+      - name: Validate deployment on disposable Ubuntu
+        run: |
+          shellcheck deploy/*.sh
+          sudo env "PATH=$PATH" GITHUB_ACTIONS=true bash deploy/test-install.sh
+      - name: Ruff
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+      - name: Mypy (strict)
+        run: uv run mypy src
+      - name: Pytest (no network)
+        env:
+          HYPOTHESIS_PROFILE: ci
+        run: uv run pytest -q
+      - name: Pre-commit hooks (gitleaks runs in its own job)
+        env:
+          SKIP: gitleaks
+        run: uv run pre-commit run --all-files --show-diff-on-failure
+
+  secrets:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read  # gitleaks-action lists the PR's commits
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

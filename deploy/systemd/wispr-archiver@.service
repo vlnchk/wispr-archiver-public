@@ -1,0 +1,28 @@
+[Unit]
+Description=Wispr archive job (%i)
+Wants=network-online.target
+After=network-online.target
+OnFailure=wispr-archiver-notify@%i.service
+
+[Service]
+Type=oneshot
+User=wispr-archiver
+Group=wispr-archiver
+WorkingDirectory=/var/lib/wispr-archiver
+Environment=HOME=/var/lib/wispr-archiver
+EnvironmentFile=/etc/wispr-archiver/env
+UMask=0027
+TimeoutStartSec=2h
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+CapabilityBoundingSet=
+RestrictSUIDSGID=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+ReadWritePaths=/var/lib/wispr-archiver
+ExecStart=/usr/bin/flock --no-fork /var/lib/wispr-archiver/schedule.lock /usr/bin/env WISPR_ARCHIVER_RUN_ID=${INVOCATION_ID} /opt/wispr-archiver/current/bin/wispr-archiver %i

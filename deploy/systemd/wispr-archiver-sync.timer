@@ -1,0 +1,10 @@
+[Unit]
+Description=Schedule Wispr archive sync
+
+[Timer]
+OnCalendar=*-*-* *:00,30:00 UTC
+Persistent=true
+Unit=wispr-archiver@sync.service
+
+[Install]
+WantedBy=timers.target

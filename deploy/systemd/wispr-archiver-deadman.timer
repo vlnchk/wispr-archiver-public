@@ -1,0 +1,10 @@
+[Unit]
+Description=Schedule Wispr archive deadman-check
+
+[Timer]
+OnCalendar=*-*-* *:07,22,37,52:00 UTC
+Persistent=true
+Unit=wispr-archiver@deadman-check.service
+
+[Install]
+WantedBy=timers.target

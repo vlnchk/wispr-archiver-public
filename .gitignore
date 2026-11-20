@@ -1,0 +1,55 @@
+# --- Credentials ---
+.env
+.env.*
+!.env.example
+*.token.json
+mcp-token*.json
+*token*.json
+rclone.conf
+secrets/
+
+# --- Private archives and local state ---
+# Anchor archive paths to the repository root to keep the Python package visible.
+/archive/
+/archive-local/
+/archive-*/
+/_snapshots/
+*.db
+*.db-journal
+*.db.bak-*
+*.db.rebuild*
+*.sqlite
+*.sqlite3
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# --- Editor and operating system files ---
+node_modules/
+.DS_Store
+.idea/
+.vscode/
+
+# Private maintainer journal
+/docs/DECISIONS*.md
+
+# --- Local configuration and runtime files ---
+/state/
+/state-*.db
+*.db-wal
+*.db-shm
+run.lock
+config.local.toml
+mac.toml
+/wispr-probe*.json

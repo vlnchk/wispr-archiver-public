@@ -1,0 +1,7 @@
+# Copy to ~/.config/wispr-archiver/mac.toml. Paths beginning with ~ expand to your home.
+archive_dir = "~/Library/Application Support/wispr-archiver/archive"
+state_path = "~/Library/Application Support/wispr-archiver/state.db"
+timezone = "UTC"
+rclone_remote = "wispr-gdrive:Wispr Archive"
+# Set this to the absolute path printed by 'command -v rclone' in your terminal.
+rclone_binary = "/opt/homebrew/bin/rclone"

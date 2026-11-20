@@ -1,0 +1,29 @@
+[Unit]
+Description=Report failure of Wispr archive job (%i)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=wispr-archiver
+Group=wispr-archiver
+WorkingDirectory=/var/lib/wispr-archiver
+Environment=HOME=/var/lib/wispr-archiver
+EnvironmentFile=/etc/wispr-archiver/env
+UMask=0027
+TimeoutStartSec=2h
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+CapabilityBoundingSet=
+RestrictSUIDSGID=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+ReadWritePaths=/var/lib/wispr-archiver
+# A manual job might have held run.lock when the scheduled job failed.
+ExecStartPre=/usr/bin/flock --timeout 3600 /var/lib/wispr-archiver/.config/wispr-archiver/run.lock /usr/bin/true
+ExecStart=/usr/bin/flock --no-fork /var/lib/wispr-archiver/schedule.lock /opt/wispr-archiver/current/bin/wispr-archiver notify --unit wispr-archiver@%i.service
